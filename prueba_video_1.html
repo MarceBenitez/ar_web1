@@ -8,12 +8,10 @@
 
     <a-scene vr-mode-ui='enabled: false;' embedded arjs='trackingMethod: best; sourceType: webcam; debugUIEnabled: false;'>
 
-
-        <a-assets timeout="10000">
+        <a-assets timeout="10">
             <!--<img id="watchImage" src="/img/watch.jpg">-->
             <video id="waterVideo" loop="false" autoplay="true" src="https://marcebenitez.github.io/ar_web1/data/videos/pacman.mp4" preload="auto"></video>
         </a-assets>
-
 
         <a-marker preset="hiro" registerevents>
             <a-video id="water" src="#waterVideo" height="2" width="1" position="0 1 0" autoplay="false"></a-video>
