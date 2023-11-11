@@ -14,15 +14,21 @@
             <video id="waterVideo" loop="false" autoplay="true" src="https://marcebenitez.github.io/ar_web1/data/videos/pacman.mp4" preload="auto"></video>
         </a-assets>
 
+
+        <a-marker preset="hiro" registerevents>
+            <a-video id="water" src="#waterVideo" height="2" width="1" position="0 1 0" autoplay="false"></a-video>
+        </a-marker>
+
+        <!--
         <a-nft id="marker"
           type="nft"
           url="https://marcebenitez.github.io/ar_web1/data/marker/logo_cerebro" >
 
-            <!--<a-image id="watch" src="#watchImage" height="2" width="1" position="0 1 0"></a-image>-->
+            <a-image id="watch" src="#watchImage" height="2" width="1" position="0 1 0"></a-image>
             <a-video id="water" src="#waterVideo" height="2" width="1" position="0 1 0" autoplay="true"></a-video>
 
         </a-nft>
-
+        -->
 
         <a-entity id="rig" position="0 0 15">
           <a-camera id="camera"></a-camera>
