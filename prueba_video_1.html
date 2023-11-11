@@ -9,9 +9,9 @@
     <a-scene vr-mode-ui='enabled: false;' embedded arjs='trackingMethod: best; sourceType: webcam; debugUIEnabled: false;'>
 
 
-          <a-assets timeout="10000">
+        <a-assets timeout="10000">
             <!--<img id="watchImage" src="/img/watch.jpg">-->
-            <video id="waterVideo" loop="false" autoplay="false" src="https://marcebenitez.github.io/ar_web1/data/videos/pacman.mp4" preload="auto"></video>
+            <video id="waterVideo" loop="false" autoplay="true" src="https://marcebenitez.github.io/ar_web1/data/videos/pacman.mp4" preload="auto"></video>
         </a-assets>
 
         <a-nft id="marker"
@@ -19,7 +19,7 @@
           url="https://marcebenitez.github.io/ar_web1/data/marker/logo_cerebro" >
 
             <!--<a-image id="watch" src="#watchImage" height="2" width="1" position="0 1 0"></a-image>-->
-            <a-video id="water" src="#waterVideo" height="2" width="1" position="0 1 0" autoplay="false"></a-video>
+            <a-video id="water" src="#waterVideo" height="2" width="1" position="0 1 0" autoplay="true"></a-video>
 
         </a-nft>
 
