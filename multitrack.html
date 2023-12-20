@@ -12,7 +12,7 @@
         <a-asset-item id="cerebroModel" src="https://marcebenitez.github.io/ar_web1/models/brain_circuit.obj"></a-asset-item>
         <a-asset-item id="galagaModel"  src="https://marcebenitez.github.io/ar_web1/data/marker/SpaceInvader3/Space_Invader.obj"></a-asset-item>
         <a-asset-item id="pulpoModel"   src="https://marcebenitez.github.io/ar_web1/models/pulpo.obj"></a-asset-item>
-        <a-asset-item id="robotModel"   src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
+        <a-asset-item id="robotModel"   src="https://marcebenitez.github.io/ar_web1/models/Robo8.obj"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -27,6 +27,10 @@
 
       <a-entity mindar-image-target="targetIndex: 2">
         <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.008 0.008 0.008" src="#pulpoModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.008 0.008 0.008" src="#robotModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
       </a-entity>
 
     </a-scene>
