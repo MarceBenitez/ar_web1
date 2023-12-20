@@ -8,10 +8,11 @@
   </head>
 
   <body>
-    <a-scene mindar-image="imageTargetSrc: https://marcebenitez.github.io/ar_web1/data/marker/4markers.mind; maxTrack: 4" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: https://marcebenitez.github.io/ar_web1/data/marker/5markers.mind; maxTrack: 4" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <a-asset-item id="cerebroModel" src="https://marcebenitez.github.io/ar_web1/models/brain_circuit.obj"></a-asset-item>
         <a-asset-item id="galagaModel"  src="https://marcebenitez.github.io/ar_web1/data/marker/SpaceInvader3/Space_Invader.obj"></a-asset-item>
+        <a-asset-item id="corazonModel"  src="https://marcebenitez.github.io/ar_web1/data/marker/SpaceInvader3/Space_Invader.obj"></a-asset-item>
         <a-asset-item id="pulpoModel"   src="https://marcebenitez.github.io/ar_web1/models/pulpo.obj"></a-asset-item>
         <a-asset-item id="robotModel"   src="https://marcebenitez.github.io/ar_web1/models/robot.obj"></a-asset-item>
       </a-assets>
@@ -27,10 +28,14 @@
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.008 0.008 0.008" src="#pulpoModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        <a-obj-model rotation="0 0 0 " position="0 0 0.1" scale="0.008 0.008 0.008" src="#corazonModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 3">
+        <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.008 0.008 0.008" src="#pulpoModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 4">
         <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.5 0.5 0.5" src="#robotModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
       </a-entity>
 
