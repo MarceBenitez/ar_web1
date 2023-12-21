@@ -8,7 +8,7 @@
   </head>
 
   <body>
-    <a-scene mindar-image="imageTargetSrc: https://marcebenitez.github.io/ar_web1/data/marker/5markers.mind; maxTrack: 4" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: https://marcebenitez.github.io/ar_web1/data/marker/5markers.mind; maxTrack: 5" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
         <a-asset-item id="cerebroModel" src="https://marcebenitez.github.io/ar_web1/models/brain_circuit.obj"></a-asset-item>
         <a-asset-item id="corazonModel"  src="https://marcebenitez.github.io/ar_web1/models/polygon_heart.obj"></a-asset-item>
@@ -20,7 +20,7 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-obj-model rotation="0 -180 0" position="0 0-10" scale="0.008 0.008 0.008" src="#cerebroModel" >
+        <a-obj-model rotation="0 -180 0" position="-10 0-10" scale="0.008 0.008 0.008" src="#cerebroModel" >
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
