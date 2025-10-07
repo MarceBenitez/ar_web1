@@ -1,170 +1,10 @@
 <html>
   <head>
-    <title>Cerebro 3D Simple</title>
+    <title>Cerebro 3D Real</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
-    <script>
-      // Componente simple de cerebro usando esferas aplanadas
-      AFRAME.registerComponent('simple-brain', {
-        init: function() {
-          const el = this.el;
-          const scene = el.sceneEl.object3D;
-          
-          // Crear grupo para el cerebro completo
-          const brainGroup = new THREE.Group();
-          
-          // Hemisferio izquierdo (esfera aplanada)
-          const leftGeometry = new THREE.SphereGeometry(0.5, 12, 8);
-          leftGeometry.scale(0.8, 1.2, 0.6); // Aplanar para forma cerebral
-          const leftMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0x00FF00,
-            wireframe: true 
-          });
-          const leftHemisphere = new THREE.Mesh(leftGeometry, leftMaterial);
-          leftHemisphere.position.set(-0.3, 0, 0);
-          brainGroup.add(leftHemisphere);
-          
-          // Hemisferio derecho (esfera aplanada)
-          const rightGeometry = new THREE.SphereGeometry(0.5, 12, 8);
-          rightGeometry.scale(0.8, 1.2, 0.6); // Aplanar para forma cerebral
-          const rightMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0x00FF00,
-            wireframe: true 
-          });
-          const rightHemisphere = new THREE.Mesh(rightGeometry, rightMaterial);
-          rightHemisphere.position.set(0.3, 0, 0);
-          brainGroup.add(rightHemisphere);
-          
-          // Cerebelo (parte posterior)
-          const cerebellumGeometry = new THREE.SphereGeometry(0.3, 8, 6);
-          cerebellumGeometry.scale(1.2, 0.8, 0.4);
-          const cerebellumMaterial = new THREE.MeshBasicMaterial({
-            color: 0x0088FF,
-            wireframe: true
-          });
-          const cerebellum = new THREE.Mesh(cerebellumGeometry, cerebellumMaterial);
-          cerebellum.position.set(0, -0.4, -0.2);
-          brainGroup.add(cerebellum);
-          
-          // Tronco cerebral
-          const brainstemGeometry = new THREE.CylinderGeometry(0.1, 0.05, 0.4, 8);
-          const brainstemMaterial = new THREE.MeshBasicMaterial({
-            color: 0xFF4444,
-            wireframe: true
-          });
-          const brainstem = new THREE.Mesh(brainstemGeometry, brainstemMaterial);
-          brainstem.position.set(0, -0.7, 0);
-          brainstem.rotation.x = Math.PI / 2;
-          brainGroup.add(brainstem);
-          
-          el.object3D.add(brainGroup);
-          
-          // Animación
-          el.setAttribute('animation', {
-            property: 'rotation',
-            to: '0 360 0',
-            loop: true,
-            dur: 15000
-          });
-        }
-      });
-
-      // Versión alternativa solo con líneas
-      AFRAME.registerComponent('line-brain', {
-        init: function() {
-          const el = this.el;
-          
-          // Crear geometría simple de cerebro con líneas
-          const geometry = new THREE.BufferGeometry();
-          const material = new THREE.LineBasicMaterial({ color: 0x4A90E2 });
-          
-          // Puntos para el contorno del cerebro
-          const points = [];
-          
-          // Contorno superior del hemisferio izquierdo
-          for (let i = 0; i <= Math.PI; i += 0.1) {
-            const x = -0.5 + Math.cos(i) * 0.4;
-            const y = Math.sin(i) * 0.6;
-            points.push(new THREE.Vector3(x, y, 0));
-          }
-          
-          // Contorno superior del hemisferio derecho
-          for (let i = 0; i <= Math.PI; i += 0.1) {
-            const x = 0.5 - Math.cos(i) * 0.4;
-            const y = Math.sin(i) * 0.6;
-            points.push(new THREE.Vector3(x, y, 0));
-          }
-          
-          // Cerrar el contorno
-          points.push(new THREE.Vector3(-0.5, 0, 0));
-          
-          geometry.setFromPoints(points);
-          
-          const line = new THREE.Line(geometry, material);
-          el.object3D.add(line);
-          
-          // Animación
-          el.setAttribute('animation', {
-            property: 'rotation',
-            to: '0 360 0',
-            loop: true,
-            dur: 10000
-          });
-        }
-      });
-
-      // Versión EXTREMADAMENTE simple - solo el contorno
-      AFRAME.registerComponent('basic-brain-outline', {
-        init: function() {
-          const el = this.el;
-          const scene = el.sceneEl.object3D;
-          
-          // Crear texto 3D que diga "CEREBRO"
-          const brainText = document.createElement('a-text');
-          brainText.setAttribute('value', 'CEREBRO');
-          brainText.setAttribute('color', '#00FF00');
-          brainText.setAttribute('position', '0 0.5 0');
-          brainText.setAttribute('align', 'center');
-          el.appendChild(brainText);
-          
-          // Crear un simple contorno de cerebro
-          const group = new THREE.Group();
-          
-          // Hemisferio izquierdo - arco simple
-          const leftCurve = new THREE.EllipseCurve(
-            -0.3, 0,           // centro x, y
-            0.4, 0.6,          // radio x, y
-            0, Math.PI,        // inicio, fin
-            false,             // sentido horario
-            0                  // rotación
-          );
-          const leftPoints = leftCurve.getPoints(10);
-          const leftGeometry = new THREE.BufferGeometry().setFromPoints(leftPoints);
-          const leftLine = new THREE.Line(leftGeometry, new THREE.LineBasicMaterial({ color: 0x00FF00 }));
-          group.add(leftLine);
-          
-          // Hemisferio derecho - arco simple
-          const rightCurve = new THREE.EllipseCurve(
-            0.3, 0,            // centro x, y
-            0.4, 0.6,          // radio x, y
-            0, Math.PI,        // inicio, fin
-            true,              // sentido horario
-            0                  // rotación
-          );
-          const rightPoints = rightCurve.getPoints(10);
-          const rightGeometry = new THREE.BufferGeometry().setFromPoints(rightPoints);
-          const rightLine = new THREE.Line(rightGeometry, new THREE.LineBasicMaterial({ color: 0x00FF00 }));
-          group.add(rightLine);
-          
-          el.object3D.add(group);
-          
-          console.log("Cerebro básico creado - debería ser visible");
-        }
-      });
-    </script>
   </head>
 
   <body>
@@ -174,40 +14,69 @@
              vr-mode-ui="enabled: false" 
              device-orientation-permission-ui="enabled: false">
 
+      <a-assets>
+        <!-- Modelo 3D real de cerebro humano -->
+        <a-asset-item id="brainModel" src="https://cdn.glitch.global/7c71a5c7-21f3-4e2a-9c6b-8e71e0e5328f/brain.glb?v=1705361234567"></a-asset-item>
+        
+        <!-- Modelo alternativo en caso de que el primero falle -->
+        <a-asset-item id="brainModel2" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/BrainStem/glTF/BrainStem.gltf"></a-asset-item>
+        
+        <!-- Otro modelo alternativo -->
+        <a-asset-item id="brainModel3" src="https://marcebenitez.github.io/ar_web1/models/cerebro_3d.obj"></a-asset-item>
+      </a-assets>
+
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- PRUEBA 1: Cerebro Simple con Esferas -->
+      <!-- Opción 1: Usando modelo GLB/GLTF (recomendado) -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity position="0 0.3 0" scale="1.2 1.2 1.2" simple-brain></a-entity>
+        <a-entity position="0 0.1 0" 
+                 scale="0.15 0.15 0.15"
+                 gltf-model="#brainModel"
+                 animation="property: rotation; to: 0 360 0; loop: true; dur: 20000">
+        </a-entity>
       </a-entity>
 
-      <!-- PRUEBA 2: Solo Contorno (más simple) -->
+      <!-- Opción 2: Modelo alternativo (descomentar si la opción 1 no funciona) -->
       <!--
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity position="0 0.3 0" scale="1.5 1.5 1.5" line-brain></a-entity>
+        <a-entity position="0 0.1 0" 
+                 scale="0.8 0.8 0.8"
+                 gltf-model="#brainModel2"
+                 animation="property: rotation; to: 0 360 0; loop: true; dur: 20000">
+        </a-entity>
       </a-entity>
       -->
 
-      <!-- PRUEBA 3: Extremadamente simple con texto -->
+      <!-- Opción 3: Tu modelo original (como respaldo) -->
       <!--
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity position="0 0 0" scale="1 1 1" basic-brain-outline></a-entity>
+        <a-obj-model rotation="0 0 0" 
+                    position="0 0 0" 
+                    scale="0.5 0.5 0.5" 
+                    src="#brainModel3"
+                    animation="property: rotation; to: 0 360 0; loop: true; dur: 15000">
+        </a-obj-model>
       </a-entity>
       -->
 
     </a-scene>
-    
+
+    <div style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+      <strong>Instrucciones:</strong><br>
+      1. Apunta al marcador del cerebro<br>
+      2. Deberías ver un cerebro 3D realista girando<br>
+      3. Si no se ve, prueba las opciones 2 y 3 en el código
+    </div>
+
     <script>
-      // Verificar que todo se cargue correctamente
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Página cargada - buscando elementos A-Frame');
+      // Verificar carga de modelos
+      document.querySelector('a-scene').addEventListener('loaded', function() {
+        console.log('Escena cargada - revisando modelos 3D');
         
-        const scene = document.querySelector('a-scene');
-        if (scene) {
-          scene.addEventListener('loaded', function() {
-            console.log('Escena A-Frame cargada correctamente');
-          });
-        }
+        const assets = document.querySelector('a-assets');
+        assets.addEventListener('loaded', function() {
+          console.log('Assets cargados - modelos listos');
+        });
       });
     </script>
   </body>
