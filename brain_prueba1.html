@@ -1,23 +1,23 @@
 <html>
   <head>
-    <title>Cerebro 3D - Puntos y Líneas</title>
+    <title>Cerebro 3D Realista</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // Componente para cerebro wireframe mejorado
-      AFRAME.registerComponent('wireframe-brain', {
+      // Componente para cerebro con forma más realista
+      AFRAME.registerComponent('realistic-brain', {
         init: function() {
           const el = this.el;
           
-          // Crear geometría del cerebro
-          const brainGeometry = this.createBrainGeometry();
+          // Crear geometría del cerebro realista
+          const brainGeometry = this.createRealisticBrainGeometry();
           
           // Material para las líneas
           const lineMaterial = new THREE.LineBasicMaterial({ 
-            color: 0x00FF88,
+            color: 0x4A90E2,
             linewidth: 1
           });
           
@@ -30,21 +30,21 @@
             property: 'rotation',
             to: '0 360 0',
             loop: true,
-            dur: 15000
+            dur: 20000
           });
         },
         
-        createBrainGeometry: function() {
+        createRealisticBrainGeometry: function() {
           const geometry = new THREE.BufferGeometry();
           const vertices = [];
           const indices = [];
           
-          // Crear hemisferio izquierdo
-          this.createHemisphere(vertices, indices, -0.4, 0, 0, 0.8);
-          // Crear hemisferio derecho  
-          this.createHemisphere(vertices, indices, 0.4, 0, 0, 0.8);
-          // Crear conexiones entre hemisferios
-          this.createConnections(vertices, indices);
+          // Crear hemisferio izquierdo con más detalle
+          this.createBrainHemisphere(vertices, indices, -0.5);
+          // Crear hemisferio derecho
+          this.createBrainHemisphere(vertices, indices, 0.5);
+          // Crear cuerpo calloso (conexión entre hemisferios)
+          this.createCorpusCallosum(vertices, indices);
           
           geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
           geometry.setIndex(indices);
@@ -52,98 +52,110 @@
           return geometry;
         },
         
-        createHemisphere: function(vertices, indices, offsetX, offsetY, offsetZ, size) {
-          const segments = 16;
-          const rings = 12;
+        createBrainHemisphere: function(vertices, indices, xOffset) {
+          const segments = 20;
+          const layers = 10;
           const startIndex = vertices.length / 3;
           
-          // Crear vértices para el hemisferio
-          for (let ring = 0; ring <= rings; ring++) {
-            const v = ring / rings;
-            const phi = v * Math.PI; // De 0 a PI
+          // Crear múltiples capas para simular circunvoluciones
+          for (let layer = 0; layer <= layers; layer++) {
+            const layerProgress = layer / layers;
             
             for (let segment = 0; segment <= segments; segment++) {
-              const u = segment / segments;
-              const theta = u * Math.PI * 2; // De 0 a 2PI
+              const segmentProgress = segment / segments;
+              const angle = segmentProgress * Math.PI; // Solo medio círculo para forma cerebral
               
-              // Forma más orgánica (no perfectamente esférica)
-              const distortion = 0.8 + Math.sin(theta * 2) * 0.2;
+              // Base de la forma cerebral (más plana en la parte inferior)
+              let radius = 0;
+              let y = 0;
+              let z = 0;
               
-              const x = offsetX + Math.sin(phi) * Math.cos(theta) * size * distortion;
-              const y = offsetY + Math.cos(phi) * size * 1.2;
-              const z = offsetZ + Math.sin(phi) * Math.sin(theta) * size * 0.8;
+              if (layerProgress < 0.3) {
+                // Lóbulo frontal
+                radius = 0.7 * (1 - Math.pow(layerProgress - 0.15, 2) * 3);
+                y = layerProgress * 1.2 - 0.6;
+                z = Math.sin(angle * 1.5) * radius * 0.8;
+              } else if (layerProgress < 0.7) {
+                // Parte central - más ancha
+                radius = 0.8 * (1 - Math.pow(layerProgress - 0.5, 2) * 2);
+                y = layerProgress * 1.2 - 0.6;
+                z = Math.sin(angle) * radius;
+              } else {
+                // Lóbulo occipital
+                radius = 0.6 * (1 - Math.pow(layerProgress - 0.85, 2) * 4);
+                y = layerProgress * 1.2 - 0.6;
+                z = Math.sin(angle * 0.8) * radius * 1.1;
+              }
+              
+              // Agregar irregularidades para simular circunvoluciones
+              const irregularity = Math.sin(segment * 3) * 0.1 + Math.cos(layer * 4) * 0.05;
+              radius += irregularity * 0.2;
+              
+              const x = xOffset + Math.cos(angle) * radius * (xOffset > 0 ? -1 : 1);
               
               vertices.push(x, y, z);
             }
           }
           
-          // Crear índices para las líneas
-          for (let ring = 0; ring < rings; ring++) {
+          // Conectar los puntos con líneas
+          for (let layer = 0; layer < layers; layer++) {
             for (let segment = 0; segment < segments; segment++) {
-              const a = startIndex + ring * (segments + 1) + segment;
-              const b = startIndex + ring * (segments + 1) + segment + 1;
-              const c = startIndex + (ring + 1) * (segments + 1) + segment;
-              const d = startIndex + (ring + 1) * (segments + 1) + segment + 1;
+              const a = startIndex + layer * (segments + 1) + segment;
+              const b = startIndex + layer * (segments + 1) + segment + 1;
+              const c = startIndex + (layer + 1) * (segments + 1) + segment;
+              const d = startIndex + (layer + 1) * (segments + 1) + segment + 1;
               
-              // Líneas horizontales (anillos)
+              // Líneas horizontales
               indices.push(a, b);
-              // Líneas verticales (segmentos)
+              // Líneas verticales
               indices.push(a, c);
               
-              // Conexiones finales
+              // Conexiones diagonales para mejor definición
               if (segment === segments - 1) {
                 indices.push(b, d);
               }
-              if (ring === rings - 1) {
+              if (layer === layers - 1) {
                 indices.push(c, d);
               }
             }
           }
         },
         
-        createConnections: function(vertices, indices) {
-          const connectionCount = 12;
+        createCorpusCallosum: function(vertices, indices) {
+          // Crear la conexión entre hemisferios (cuerpo calloso)
+          const connectionPoints = 8;
           const startIndex = vertices.length / 3;
           
-          // Crear puntos de conexión entre hemisferios
-          for (let i = 0; i < connectionCount; i++) {
-            const angle = (i / connectionCount) * Math.PI * 2;
-            const height = Math.sin(angle * 2) * 0.3;
+          for (let i = 0; i <= connectionPoints; i++) {
+            const progress = i / connectionPoints;
+            const angle = progress * Math.PI - Math.PI / 2;
             
-            // Punto en hemisferio izquierdo
-            vertices.push(
-              -0.3 + Math.cos(angle) * 0.1,
-              height,
-              Math.sin(angle) * 0.1
-            );
+            const x = Math.cos(angle) * 0.3;
+            const y = Math.sin(angle) * 0.4;
+            const z = 0;
             
-            // Punto en hemisferio derecho
-            vertices.push(
-              0.3 + Math.cos(angle) * 0.1, 
-              height,
-              Math.sin(angle) * 0.1
-            );
-            
-            // Conectar los puntos
-            const leftIdx = startIndex + i * 2;
-            const rightIdx = leftIdx + 1;
-            indices.push(leftIdx, rightIdx);
+            vertices.push(x, y, z);
+          }
+          
+          // Conectar los puntos del cuerpo calloso
+          for (let i = 0; i < connectionPoints; i++) {
+            indices.push(startIndex + i, startIndex + i + 1);
           }
         }
       });
 
-      // Componente alternativo - cerebro de puntos más denso
-      AFRAME.registerComponent('dense-point-brain', {
+      // Componente alternativo - cerebro de puntos con forma más anatómica
+      AFRAME.registerComponent('anatomical-brain-points', {
         init: function() {
           const el = this.el;
-          const points = this.createDensePoints();
+          const points = this.createAnatomicalPoints();
           
           const geometry = new THREE.BufferGeometry();
           geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
           
           const material = new THREE.PointsMaterial({
-            color: 0x88FF00,
-            size: 0.008,
+            color: 0x00AAFF,
+            size: 0.005,
             sizeAttenuation: true
           });
           
@@ -154,28 +166,46 @@
             property: 'rotation',
             to: '0 360 0',
             loop: true,
-            dur: 12000
+            dur: 18000
           });
         },
         
-        createDensePoints: function() {
+        createAnatomicalPoints: function() {
           const points = [];
-          const pointCount = 5000; // Muchos más puntos
+          const pointCount = 8000;
           
           for (let i = 0; i < pointCount; i++) {
             const hemisphere = Math.random() < 0.5 ? -1 : 1;
+            
+            // Distribución más anatómica
             const u = Math.random();
             const v = Math.random();
-            const theta = u * Math.PI * 2;
-            const phi = Math.acos(2 * v - 1);
             
-            // Forma cerebral más realista
-            const distortion = 0.7 + Math.sin(theta * 3) * 0.3;
-            const radius = 0.6 * distortion;
+            let x, y, z;
             
-            const x = hemisphere * 0.4 + Math.sin(phi) * Math.cos(theta) * radius;
-            const y = Math.cos(phi) * radius * 1.4;
-            const z = Math.sin(phi) * Math.sin(theta) * radius * 0.7;
+            if (u < 0.4) {
+              // Lóbulo frontal
+              x = hemisphere * (0.3 + Math.random() * 0.4);
+              y = 0.2 + Math.random() * 0.4;
+              z = (Math.random() - 0.5) * 0.6;
+            } else if (u < 0.7) {
+              // Lóbulo parietal (parte superior)
+              x = hemisphere * (0.2 + Math.random() * 0.3);
+              y = 0.6 + Math.random() * 0.3;
+              z = (Math.random() - 0.5) * 0.5;
+            } else {
+              // Lóbulo occipital (parte posterior)
+              x = hemisphere * (0.1 + Math.random() * 0.3);
+              y = 0.3 + Math.random() * 0.4;
+              z = -0.3 - Math.random() * 0.4;
+            }
+            
+            // Agregar algunos puntos en el cuerpo calloso
+            if (Math.random() < 0.1) {
+              x = (Math.random() - 0.5) * 0.6;
+              y = 0.4 + (Math.random() - 0.5) * 0.2;
+              z = 0;
+            }
             
             points.push(x, y, z);
           }
@@ -195,24 +225,17 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Cerebro Wireframe (Opción 1) -->
+      <!-- Cerebro Realista Wireframe (Recomendado) -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity position="0 0.1 0" scale="1.2 1.2 1.2" wireframe-brain></a-entity>
+        <a-entity position="0 0.2 0" scale="1.5 1.5 1.5" realistic-brain></a-entity>
       </a-entity>
 
-      <!-- Cerebro de Puntos Densos (Opción 2 - comenta/descomenta para probar) -->
+      <!-- Cerebro Anatómico de Puntos (Alternativa) -->
       <!--
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity position="0 0.1 0" scale="0.8 0.8 0.8" dense-point-brain></a-entity>
+        <a-entity position="0 0.2 0" scale="1.2 1.2 1.2" anatomical-brain-points></a-entity>
       </a-entity>
       -->
-
-      <!-- Mantener tus otros modelos existentes -->
-      <a-entity mindar-image-target="targetIndex: 1">
-        <a-obj-model rotation="90 0 0" position="0 0 0.1" scale="0.008 0.008 0.008" src="https://marcebenitez.github.io/ar_web1/models/polygon_heart.obj" 
-                   animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-        </a-obj-model>
-      </a-entity>
 
     </a-scene>
   </body>
