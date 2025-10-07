@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <title>Laboratorio de Ciencia de Datos - UCA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
+    <script>
+      // Componente para cerebro de puntos
+      AFRAME.registerComponent('pointcloud-brain', {
+        init: function() {
+          const el = this.el;
+          const brainPoints = this.createBrainPoints();
+          
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute('position', new THREE.Float32BufferAttribute(brainPoints, 3));
+          
+          const material = new THREE.PointsMaterial({
+            color: 0x00FF00,
+            size: 0.01,
+            sizeAttenuation: true
+          });
+          
+          const points = new THREE.Points(geometry, material);
+          el.object3D.add(points);
+          
+          // Agregar animación de rotación
+          el.setAttribute('animation', {
+            property: 'rotation',
+            to: '0 360 0',
+            loop: true,
+            dur: 10000
+          });
+        },
+        
+        createBrainPoints: function() {
+          const points = [];
+          const pointCount = 2000;
+          
+          for (let i = 0; i < pointCount; i++) {
+            // Hemisferio izquierdo
+            if (Math.random() > 0.5) {
+              this.addBrainPoint(points, -0.3);
+            } 
+            // Hemisferio derecho
+            else {
+              this.addBrainPoint(points, 0.3);
+            }
+          }
+          
+          return points;
+        },
+        
+        addBrainPoint: function(points, xOffset) {
+          // Distribución más densa en ciertas áreas para simular forma cerebral
+          const r = Math.random();
+          let phi, theta, radius;
+          
+          if (r < 0.3) {
+            // Corteza externa
+            phi = Math.acos(2 * Math.random() - 1);
+            theta = Math.random() * Math.PI * 2;
+            radius = 0.2 + Math.random() * 0.05;
+          } else if (r < 0.6) {
+            // Área media
+            phi = Math.acos(2 * Math.random() - 1);
+            theta = Math.random() * Math.PI * 2;
+            radius = 0.1 + Math.random() * 0.05;
+          } else {
+            // Núcleo interno
+            phi = Math.acos(2 * Math.random() - 1);
+            theta = Math.random() * Math.PI * 2;
+            radius = Math.random() * 0.1;
+          }
+          
+          const x = xOffset + Math.sin(phi) * Math.cos(theta) * radius;
+          const y = Math.cos(phi) * radius * 1.5;
+          const z = Math.sin(phi) * Math.sin(theta) * radius;
+          
+          // Agregar variación orgánica
+          const variation = 0.02;
+          points.push(
+            x + (Math.random() - 0.5) * variation,
+            y + (Math.random() - 0.5) * variation,
+            z + (Math.random() - 0.5) * variation
+          );
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <a-scene mindar-image="imageTargetSrc: https://marcebenitez.github.io/ar_web1/data/marker/5markers.mind; maxTrack: 5" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <a-asset-item id="cerebroModel" src="https://marcebenitez.github.io/ar_web1/models/cerebro_3d.obj"></a-asset-item>
+        <a-asset-item id="corazonModel"  src="https://marcebenitez.github.io/ar_web1/models/polygon_heart.obj"></a-asset-item>
+        <a-asset-item id="galagaModel"  src="https://marcebenitez.github.io/ar_web1/data/marker/SpaceInvader3/Space_Invader.obj"></a-asset-item>
+        <a-asset-item id="pulpoModel"   src="https://marcebenitez.github.io/ar_web1/models/pulpo.obj"></a-asset-item>
+        <a-asset-item id="robotModel"   src="https://marcebenitez.github.io/ar_web1/models/robot.obj"></a-asset-item>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- Cerebro de puntos 3D (nuevo) -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity position="0 0 0" scale="0.8 0.8 0.8" pointcloud-brain></a-entity>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-obj-model rotation="90 0 0" position="0 0 0.1" scale="0.008 0.008 0.008" src="#corazonModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-obj-model rotation="0 0 0 " position="0 0 0.1" scale="0.008 0.008 0.008" src="#galagaModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 3">
+        <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.008 0.008 0.008" src="#pulpoModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 4">
+        <a-obj-model rotation="0 0 0" position="0 0 0" scale="0.5 0.5 0.5" src="#robotModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>
